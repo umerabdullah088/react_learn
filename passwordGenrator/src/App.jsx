@@ -1,12 +1,19 @@
-
+import ListSites from "./ListSites";
 import { useState, useEffect, useRef } from "react"
 function App() {
-  const [sites, setSites] = useState([]);
+
   const [password, setPassword] = useState("");
+  const [web, setWeb] = useState("");
   const [length, setLength] = useState(8);
   const [numbers, setNumbers] = useState(false);
   const [chars, setChars] = useState(false);
   const inputRef = useRef(null);
+  const [sites, setSites] = useState([
+    {
+      website: "amazon",
+      password: password
+    }
+  ]);
   const passwordGenrator = () => {
     let pass = "";
     let str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -18,25 +25,51 @@ function App() {
       let index = Math.floor(Math.random() * str.length + 1);
 
       pass += str.charAt(index);
+
     }
 
     setPassword(pass);
 
   }
+
+
   useEffect(() => {
     passwordGenrator();
 
   }, [length, numbers, chars])
 
+
+
   const handleCopy = () => {
+
     window.navigator.clipboard.writeText(password)
     inputRef.current?.select();
+
+
   }
+  const handleAdd = () => {
+    setSites([...sites,
+    {
+      website: web,
+      password: password
+    }]);
+  }
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
 
       <div className="bg-white p-8 rounded-xl shadow-lg">
 
+        <input
+          type="text"
+          value={web}
+          onChange={(e) => setWeb(e.target.value)}
+          ref={inputRef}
+          className="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg
+               bg-gray-50 text-gray-900
+               focus:outline-none focus:ring-2 focus:ring-blue-500 mr-6"
+
+        />
         <input
           type="text"
           value={password}
@@ -47,7 +80,12 @@ function App() {
                focus:outline-none focus:ring-2 focus:ring-blue-500"
 
         />
-
+        <button
+          onClick={handleAdd}
+          className="mt-4 px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700"
+        >
+          Save
+        </button>
         <button
 
           className="px-5 py-2.5 bg-blue-600 text-white font-medium
@@ -91,7 +129,10 @@ function App() {
         </div>
 
       </div>
+      <ListSites sites={sites} />
     </div>
+
+
   )
 }
 
